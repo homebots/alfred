@@ -120,18 +120,6 @@ function renameBot(request, response) {
   });
 }
 
-const botSocket = new WebSocket.Server({
-  httpServer,
-  port: config.bot.port,
-  path: config.bot.path
-});
-
-const webSocket = new WebSocket.Server({
-  httpServer,
-  port: config.web.port,
-  path: config.web.path
-});
-
 function relay(origin, connection) {
   return function (payload) {
     if (origin === nodes.BOT && String(payload).startsWith('bot::')) {
@@ -194,6 +182,18 @@ function getStatus(_, response) {
   response.writeHead(200);
   response.end(toJSON(status));
 }
+
+const botSocket = new WebSocket.Server({
+  server: httpServer,
+  port: config.bot.port,
+  path: config.bot.path
+});
+
+const webSocket = new WebSocket.Server({
+  server: httpServer,
+  port: config.web.port,
+  path: config.web.path
+});
 
 botSocket.on('connection', handleConnection(nodes.BOT));
 webSocket.on('connection', handleConnection(nodes.WEB));
