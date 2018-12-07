@@ -1,0 +1,15 @@
+{
+  "name": "@homebots/alfred",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tdd": "nodemon --ext cpp,h --exec bash test.sh --watch lib --watch test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^6.1.0"
+  }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ESBot</title>
+  <style>
+  .form-container {
+    padding: 1em;
+  }
+
+  .form-container > * {
+    margin-right: 1em;
+  }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <label for="pinNumber">Pin:
+      <select name="pin" id="pinNumber">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </label>
+  </div>
+  <div class="form-container">
+    <label>
+      <input type="checkbox" id="isAnalog" value="0" /> use analog
+    </label>
+  </div>
+  <div class="form-container">
+    <button type="button" onclick="readPin()">read</button>
+    <button type="button" onclick="pulsePin()">pulse</button>
+    <button type="button" onclick="monitorPin()">monitor</button>
+  </div>
+  <div class="form-container">
+    <label for="pinValue">Value:</label>
+    <input type="text" id="pinValue" />
+    <button type="button" onclick="writeToPin()">write</button>
+  </div>
+  <div class="form-container">
+      <label for="pinReading">Current pin value:</label>
+      <input type="text" id="pinReading" disabled value="0" />
+  </div>
+
+  <pre id="output"></pre>
+  <script src="/bot-protocol.js"></script>
+  <script src="/client.js"></script>
+</body>
+</html>
