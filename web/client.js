@@ -69,7 +69,8 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     const stdout = document.querySelector('#output');
-    const client = new BotClient({ url: 'ws://localhost:2020/a'});
+    const host = window.location.hostname;
+    const client = new BotClient({ url: `ws://${host}:2020/a`});
 
     function buffer2string(buffer) {
       return String.fromCharCode.apply(null, Array.from(buffer));
