@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ws": "^6.1.0"
+    "@homebots/bot-protocol": "git+https://github.com/homebots/bot-protocol.git#master"
   }
 }

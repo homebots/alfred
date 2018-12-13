@@ -4,50 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>ESBot</title>
-  <style>
-  .form-container {
-    padding: 1em;
-  }
-
-  .form-container > * {
-    margin-right: 1em;
-  }
-  </style>
+  <title>Alfred</title>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" /> -->
+  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" /> -->
+  <link rel="stylesheet" href="client.css" />
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans|Quicksand&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
 <body>
-  <div class="form-container">
-    <label for="pinNumber">Pin:
-      <select name="pin" id="pinNumber">
-        <option value="0">0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-      </select>
-    </label>
+  <div class="form-field">
+    <label for="script" class="form-field__label">Script:</label>
+    <textarea class="form-field__input" rows="10" id="script"></textarea>
   </div>
-  <div class="form-container">
-    <label>
-      <input type="checkbox" id="isAnalog" value="0" /> use analog
-    </label>
+  <div class="btn-group btn-group--right">
+    <button class="btn btn--secondary" data-action="script.reset"><span class="material-icons">play_arrow</span></button>
+    <button class="btn btn--primary" data-action="script.send"><span class="material-icons">cancel</span></button>
   </div>
-  <div class="form-container">
-    <button type="button" onclick="readPin()">read</button>
-    <button type="button" onclick="pulsePin()">pulse</button>
-    <button type="button" onclick="monitorPin()">monitor</button>
-  </div>
-  <div class="form-container">
-    <label for="pinValue">Value:</label>
-    <input type="text" id="pinValue" />
-    <button type="button" onclick="writeToPin()">write</button>
-  </div>
-  <div class="form-container">
-      <label for="pinReading">Current pin value:</label>
-      <input type="text" id="pinReading" disabled value="0" />
-  </div>
-
-  <pre id="output"></pre>
-  <script src="/bot-protocol.js"></script>
-  <script src="/client.js"></script>
 </body>
 </html>
