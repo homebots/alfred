@@ -6,28 +6,27 @@
     Bot = new BotProtocol.BrowserClient('wss://w.homebots.io/hub');
 
     const input = document.getElementById('scriptInput');
-    input.value = 'write(PIN_2, 1);console.log(await read(PIN_2));';
-
-    const botFunctions = BotProtocol.Methods.map(fn => `const ${fn} = Bot.${fn}.bind(Bot);\n`).join('');
-    const constants = 'const {' + Object.keys(BotProtocol.Constants).join(', ') + '} = Constants;';
-
-    const wrapper = `
-      ${botFunctions}
-      ${constants}
-      return function() {
-        return (async () => { %s })()
-      }`;
+    const submit = document.getElementById('submitBtn');
 
     function resetScript() {
       input.value = '';
     }
 
     async function runScript() {
-      const source = input.value;
-      const fn = Function('Bot', 'Constants', wrapper.replace('%s', source));
-      const compiledCode = fn.call(null, Bot, BotProtocol.Constants);
-      const output = await compiledCode.call(null);
+      input.disabled = true;
+      submit.disabled = true;
+      let output;
+
+      try {
+        output = await Bot.runScript(input.value);
+      } catch (error) {
+        output = error;
+      }
+
       console.log(output);
+
+      input.disabled = false;
+      submit.disabled = false;
     }
 
     const actions = {
