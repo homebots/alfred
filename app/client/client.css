@@ -36,25 +36,21 @@ p {
 .btn-group {
   display: flex;
   align-items: flex-start;
-  margin-left: -var(--vspacing);
   margin-bottom: var(--vspacing);
-  padding: 0 var(--hspacing);
 }
 .btn-group--right {
-  align-items: flex-end;
+  justify-content: flex-end;
 }
 .btn-group__item {
   margin-left: calc(var(--hspacing) / 2);
 }
 .btn {
-  font-family: "Quicksand", sans-serif;
-  padding: 0.25rem 0.75rem 0.4rem;
+  padding: calc(var(--vspacing) / 2) var(--hspacing);
   border: 1px solid transparent;
   font-size: 1.4rem;
   border-radius: var(--border-radius);
-  margin-right: calc(var(--hspacing) / 2);
-  overflow: hidden;
   box-shadow: var(--shadow);
+  overflow: hidden;
 }
 .btn--primary {
   background: var(--color-primary);
@@ -69,6 +65,9 @@ p {
 .btn:disabled {
   background: rgba(0, 0, 0, 0.2);
   border: var(--color-gray-darkest);
+}
+.btn .material-icons {
+  font-size: 2rem;
 }
 h1,
 h2,

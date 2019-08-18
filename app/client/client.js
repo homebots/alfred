@@ -1,16 +1,14 @@
 'use strict';
 (function (BotProtocol) {
-  let Bot;
-
   function init() {
-    Bot = new BotProtocol.BrowserClient('wss://hub.homebots.io/hub');
-
+    const Bot = new BotProtocol.BrowserClient('wss://hub.homebots.io/hub');
     const input = document.getElementById('scriptInput');
     const submit = document.getElementById('submitBtn');
 
-    function resetScript() {
-      input.value = '';
-    }
+    const editor = CodeMirror.fromTextArea(input, {
+      lineNumbers: true,
+      mode: "javascript"
+    });
 
     async function runScript() {
       input.disabled = true;
@@ -18,7 +16,7 @@
       let output;
 
       try {
-        output = await Bot.runScript(input.value);
+        output = await Bot.runScript(editor.getValue());
       } catch (error) {
         output = error;
       }
@@ -30,7 +28,6 @@
     }
 
     const actions = {
-      'script.reset': resetScript,
       'script.send': runScript,
     };
 
