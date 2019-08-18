@@ -3,7 +3,7 @@
   let Bot;
 
   function init() {
-    Bot = new BotProtocol.BrowserClient('wss://w.homebots.io/hub');
+    Bot = new BotProtocol.BrowserClient('wss://hub.homebots.io/hub');
 
     const input = document.getElementById('scriptInput');
     const submit = document.getElementById('submitBtn');
