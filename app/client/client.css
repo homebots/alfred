@@ -184,6 +184,10 @@ h2,
   font-family: 'Source Code Pro';
 }
 
+.form-field__coder {
+  height: 90vh;
+}
+
 .form-field__input:focus {
   outline: 0;
 }

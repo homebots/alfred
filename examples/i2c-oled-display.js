@@ -1,7 +1,9 @@
-const DATA = PIN_TX;
-const CLOCK = PIN_0;
+const DATA =      PIN_TX;
+const CLOCK =     PIN_0;
+const ROWS =      1;
+const COLUMNS =   128;
 const LCD_ADDRESS = 0x3c;
-const LCD_ADDRESS_BITS = ('0000000' + (LCD_ADDRESS).toString(2)).slice(-7).split('');
+const LCD_ADDRESS_BITS = (address) => ('0000000' + (address).toString(2)).slice(-7).split('');
 
 function lowerPins() {
   write(DATA, 0);
@@ -39,20 +41,25 @@ function send(value) {
   }
 }
 
-async function readAckBit() {
-  tick();
-  tick();
-  tick();
-  const ack = await read(DATA);
-  tick();
-  tick();
-  tick();
-  tick();
-
-  return ack;
+function sendPixel(value) {
+  const bits = [value, 0, 0, 0, 0, 0, 0, 0];
+  bits.forEach(bit => send(bit));
 }
 
-async function sendMatrix() {
+async function dataReceived() {
+  //tick();
+  //tick();
+  //tick();
+  tick();
+  const ack = await read(DATA);
+  //tick();
+  //tick();
+  //tick();
+
+  return ack == 0;
+}
+
+async function sendMatrix(address) {
   lowerPins();
   reset();
 
@@ -63,38 +70,49 @@ async function sendMatrix() {
   start();
 
   // send slave address
-  LCD_ADDRESS_BITS.forEach(bit => send(bit));
+  LCD_ADDRESS_BITS(address).forEach(bit => send(bit));
 
-  // R/W bit
-  send(1);
+  // Write bit
+  send(0);
 
-  const slaveNotFound = !await readAckBit();
+  const received = await dataReceived();
 
-  if (slaveNotFound) {
-    console.log('No slave');
-    return;
+  if (!received) {
+    console.log('No slave at %d', address);
+    return await wait(100);
   }
 
-  while (cursor < end) {
-    send(bytes[cursor]);
-	let failed = await readAckBit();
+  console.log('Found slave', address);
 
-    if (!failed) {
-	  cursor++;
+  while (cursor < end) {
+    sendPixel(bytes[cursor]);
+
+    let received = await dataReceived();
+    if (received) {
+      cursor++;
     }
   }
 
   stop();
+
+  return true;
 }
 
-// 128 x 32
-const matrix = Array.from({ length: 32 }).map(() => Array.from({ length: 128 }).fill(0));
+const matrix = Array.from({ length: ROWS }).map(() => Array.from({ length: COLUMNS }).fill(0));
 matrix.forEach((line, lineIndex) => {
   line.forEach((dot, index) => {
     line[index] = Number(index % lineIndex > 0);
   });
 });
 
-console.log(matrix.map(line => line.join('')).join('\n'));
+await sendMatrix(LCD_ADDRESS);
 
-return sendMatrix();
+// console.log(matrix.map(line => line.join('')).join('\n'));
+// let slaveAddress = 0x00;
+// while (slaveAddress < 0xff) {
+//   let found = await sendMatrix(++slaveAddress);
+//   if (found === true) {
+//    break;
+//   }
+// }
+
