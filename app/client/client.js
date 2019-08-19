@@ -7,12 +7,13 @@
 
     const editor = CodeMirror.fromTextArea(input, {
       lineNumbers: true,
-      mode: "javascript"
+      tabSize: 2,
+      mode: 'javascript'
     });
 
     async function runScript() {
-      input.disabled = true;
       submit.disabled = true;
+
       let output;
 
       try {
@@ -23,7 +24,6 @@
 
       console.log(output);
 
-      input.disabled = false;
       submit.disabled = false;
     }
 
