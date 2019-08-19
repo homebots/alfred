@@ -159,7 +159,7 @@ h2,
 }
 
 .form-field {
-  padding: var(--hspacing) var(--vspacing);
+  padding: 0 var(--vspacing) var(--hspacing);
 }
 
 .form-field__label {
@@ -181,11 +181,10 @@ h2,
 
 .form-field__textarea {
   line-height: 1.25;
-  font-family: 'Source Code Pro';
 }
 
-.form-field__coder {
-  height: 90vh;
+.form-field > .CodeMirror {
+  height: 80vh;
 }
 
 .form-field__input:focus {

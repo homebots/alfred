@@ -1,15 +1,18 @@
 const DATA =      PIN_TX;
-const CLOCK =     PIN_0;
+const CLOCK =     PIN_2;
+const VCC =       PIN_RX;
+const GND =       PIN_0;
+
 const ROWS =      1;
 const COLUMNS =   128;
 const LCD_ADDRESS = 0x3c;
 const LCD_ADDRESS_BITS = (address) => ('0000000' + (address).toString(2)).slice(-7).split('');
 
-function lowerPins() {
+function setupPins() {
   write(DATA, 0);
   write(CLOCK, 0);
-  write(PIN_2, 0);
-  write(PIN_RX, 0);
+  write(VCC, 1);
+  write(GND, 0);
 }
 
 function reset() {
@@ -60,7 +63,7 @@ async function dataReceived() {
 }
 
 async function sendMatrix(address) {
-  lowerPins();
+  setupPins();
   reset();
 
   let cursor = 0;
