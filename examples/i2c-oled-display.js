@@ -129,7 +129,7 @@ function send(bytes) {
   return wait(10);
 }
 
-async function initDisplay() {
+function initDisplay() {
   const is128_64 = screenHeight === 64;
 
   return send([

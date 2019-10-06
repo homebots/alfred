@@ -13,7 +13,7 @@
 
     setInterval(() =>{
       window.localStorage.setItem('editor.value', editor.getValue());
-    }, 5000);
+    }, 3000);
 
     editor.setValue(window.localStorage.getItem('editor.value') || '');
 
