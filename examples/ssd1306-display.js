@@ -1,9 +1,36 @@
-if (!window.client) {
-  window.client = new WebSocket('wss://hub.homebots.io/hub')
-  await wait(2000);
-}
-
-const OWL = [
+const init = [
+  0x00,
+  0xae,
+  0xd5,
+  0x80,
+  0xa8,
+  0x1f,
+  0xd3,
+  0x00,
+  0x40,
+  0x8d,
+  0x14,
+  0x20,
+  0x01,
+  0xa1,
+  0xc8,
+  0x00,
+  0x10,
+  0xda,
+  0x02,
+  0x81,
+  0x8f,
+  0xd9,
+  0xf1,
+  0xdb,
+  0x20,
+  0xa4,
+  0xa6,
+  0xaf,
+  0x20,
+  0x02
+]
+const data = [
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -77,126 +104,20 @@ const OWL = [
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 ];
 
-const WRITE_COMMAND           = 0x00;
-const WRITE_DATA              = 0x40;
+i2cSetup();
 
-const SET_LOW_COLUMN          = 0x00;
-const USE_EXTERNAL_VCC        = 0x01;
-const USE_INTERNAL_VCC        = 0x02;
-const SET_HIGH_COLUMN         = 0x10;
-const SET_MEMORY_MODE         = 0x20;
-const SET_COLUMN_ADDRESS      = 0x21;
-const SET_PAGE_ADDRRESS       = 0x22;
-const SET_FADE_BLINK          = 0x23;
-const RIGHT_HSCROLL           = 0x26;
-const LEFT_HSCROLL            = 0x27;
-const RIGHT_DIAGSCROLL        = 0x29;
-const LEFT_DIAGSCROLL         = 0x2a;
-const DEACTIVATE_SCROLL       = 0x2e;
-const ACTIVATE_SCROLL         = 0x2f;
-const SET_START_LINE          = 0x40;
-const SET_CONTRAST            = 0x81;
-const CHARGE_PUMP             = 0x8D;
-const X_MAP_NORMAL            = 0xA0;
-const X_MAP_INVERTED          = 0xA1;
-const SET_VSCROLL_AREA        = 0xA3;
-const DISPLAY_SHOW_MEMORY     = 0xA4;
-const DISPLAY_ALL_ON          = 0xA5;
-const NORMAL_DISPLAY          = 0xA6;
-const INVERTED_DISPLAY        = 0xA7;
-const SET_MULTIPLEX           = 0xA8;
-const DISPLAY_OFF             = 0xAE;
-const DISPLAY_ON              = 0xAF;
-const PAGE_ADDRESSING_START   = 0xB0;
-const COM_INCREMENTAL         = 0xC0;
-const COM_DECREMENTAL         = 0xC8;
-const SET_DISPLAY_OFFSET      = 0xD3;
-const SET_CLOCK_DIVIDER       = 0xD5;
-const SET_ZOOM                = 0xD6;
-const SET_PRECHARGE           = 0xD9;
-const SET_COM_PINS            = 0xDA;
-const SET_VCOM_DETECT         = 0xDB;
-const NOP                     = 0xE3;
-
-const screenWidth = 128;
-const screenHeight = 64;
-
-const zeroFill = (length) => Array.from({ length }).fill(0);
-const oneFill = (length) => Array.from({ length }).fill(1);
+const deviceAddress = await i2CFindDevice();
 
 function send(bytes) {
-  client.send(new Uint8Array(bytes));
-  return wait(10);
+  i2cStart();
+  i2cWriteAndAck(deviceAddress);
+
+  bytes.forEach(byte => i2cWriteAndAck(byte));
+
+  i2cStop();
+
+  return wait(100);
 }
 
-async function initDisplay() {
-  const is128_64 = screenHeight === 64;
-
-  return send([
-    WRITE_COMMAND,
-
-    DISPLAY_OFF,
-
-    SET_CLOCK_DIVIDER,
-   	0x80,
-
-    SET_MULTIPLEX,
-    screenHeight - 1,
-
-    SET_DISPLAY_OFFSET,
-    0x00,
-
-    SET_START_LINE | 0x0,
-
-    CHARGE_PUMP,
-    0x14,
-
-    SET_MEMORY_MODE,
-    0x01,
-
-    X_MAP_INVERTED | 0x1,
-
-    COM_DECREMENTAL,
-
-    SET_LOW_COLUMN,
-
-    SET_HIGH_COLUMN,
-
-    SET_COM_PINS,
-    is128_64 ? 0x12 : 0x02,
-
-    SET_CONTRAST,
-    is128_64 ? 0xcf : 0x8f,
-
-    SET_PRECHARGE,
-    0xf1,
-
-    SET_VCOM_DETECT,
-    0x20,
-
-    DISPLAY_SHOW_MEMORY,
-    NORMAL_DISPLAY,
-    DISPLAY_ON,
-    SET_MEMORY_MODE,
-    0x2,
-  ]);
-}
-
-async function writeSliced(input) {
-	const slices = 8;
-  const sliceLength = Math.round(input.length / slices);
-
-  for (let sliceIndex = 0; sliceIndex < slices; sliceIndex++) {
-    let start = sliceIndex * sliceLength;
-    let slice = input.slice(start, start + sliceLength);
-
-    await send([WRITE_COMMAND, 0xb0 + sliceIndex]);
-
-    console.log(sliceIndex, slice);
-    await send([WRITE_DATA, ...slice, ...zeroFill(4)]);
-    await wait(5);
-  }
-}
-
-await initDisplay();
-await writeSliced(OWL);
+await send(init);
+await send(data);

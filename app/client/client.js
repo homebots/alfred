@@ -11,6 +11,12 @@
       mode: 'javascript'
     });
 
+    setInterval(() =>{
+      window.localStorage.setItem('editor.value', editor.getValue());
+    }, 5000);
+
+    editor.setValue(window.localStorage.getItem('editor.value') || '');
+
     async function runScript() {
       submit.disabled = true;
 
