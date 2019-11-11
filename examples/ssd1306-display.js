@@ -1,6 +1,10 @@
 const screenWidth = 128;
 const screenHeight = 64;
+
 const is128_64 = screenHeight === 64;
+
+// some display models need extra padding bytes after a page buffer
+const lineDrift = is128_64 ? 4 : 0;
 
 const WRITE_COMMAND           = 0x00;
 const WRITE_DATA              = 0x40;
@@ -189,7 +193,7 @@ async function writeDataByPage(bytes) {
     let slice = bytes.slice(start, start + sliceLength);
 
     writeStream([WRITE_COMMAND, SELECT_PAGE + sliceIndex]);
-    writeStream([WRITE_DATA, ...slice, ...(is128_64 ? zeroFill(4) : []) ]);
+    writeStream([WRITE_DATA, ...slice, ...zeroFill(lineDrift) ]);
   }
 }
 
